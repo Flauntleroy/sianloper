@@ -1,0 +1,13 @@
+{
+  "displaySettings": {
+    "runningText": "Selamat datang di RSUD H. Abdul Aziz Marabahan. Daftar mudah, cepat, dan tanpa antre melalui aplikasi MJKN/SIMANDAI. Unduh di Play Store sekarang!!!",
+    "logo": {
+      "path": "assets/logo_1757394713074.png",
+      "width": 200,
+      "height": 100
+    },
+    "institutionName": "RSUD H. ABDUL AZIZ MARABAHAN",
+    "showVideo": true,
+    "youtubeUrl": "https://www.youtube.com/watch?v=DOOrIxw5xOw"
+  }
+}

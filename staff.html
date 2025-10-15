@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Staff Interface - Queue Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-radius: 15px;
+        }
+
+        .navbar h1 {
+            color: #11998e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .counter-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .counter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+
+        .counter-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .queue-panel, .control-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .current-number {
+            text-align: center;
+            padding: 30px;
+            background: #11998e;
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .current-number h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .number {
+            font-size: 4em;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #00B4DB;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: #11998e;
+            color: white;
+        }
+
+        .btn-success {
+            background: #11998e;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #666666;
+            color: white;
+        }
+
+        .last-called {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .last-called h3 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .last-called-list {
+            display: flex;
+            gap: 10px;
+        }
+
+        .last-called-item {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: #f0f2f5;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #e4e6e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>
+            <i class="fas fa-hospital-user"></i>
+            Manajemen Loket
+        </h1>
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Kembali ke Beranda
+        </a>
+    </div>
+
+    <div class="container">
+        <!-- Loket A Section -->
+        <div class="counter-section" id="counterA">
+            <div class="counter-header">
+                <h2>
+                    <i class="fas fa-desktop"></i>
+                    Loket A
+                </h2>
+                <button class="btn btn-primary" id="displayA">
+                    <i class="fas fa-external-link-alt"></i>
+                    Buka Display
+                </button>
+            </div>
+            <div class="counter-content">
+                <div class="queue-panel">
+                    <div class="current-number">
+                        <h2>Nomor Antrian Saat Ini</h2>
+                        <div class="number" id="currentNumberA">0</div>
+                    </div>
+
+                    <div class="last-called">
+                        <h3>Riwayat Nomor Terpanggil</h3>
+                        <div class="last-called-list" id="lastCalledListA">
+                            <!-- Riwayat nomor akan ditampilkan di sini -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-panel">
+                    <div class="form-group">
+                        <label>Nomor Antrian</label>
+                        <input type="number" id="queueNumberA" class="form-control" placeholder="Masukkan nomor antrian">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nomor Rekam Medis</label>
+                        <input type="text" id="rmNumberA" class="form-control" placeholder="Masukkan nomor RM">
+                    </div>
+
+                    <div class="btn-group" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <button class="btn btn-secondary" id="prevButtonA">
+                            <i class="fas fa-backward"></i>
+                            Nomor Sebelumnya
+                        </button>
+                        <button class="btn btn-primary" id="callButtonA">
+                            <i class="fas fa-volume-up"></i>
+                            Panggil
+                        </button>
+                        <button class="btn btn-secondary" id="nextButtonA">
+                            <i class="fas fa-forward"></i>
+                            Nomor Selanjutnya
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loket B Section -->
+        <div class="counter-section" id="counterB">
+            <div class="counter-header">
+                <h2>
+                    <i class="fas fa-desktop"></i>
+                    Loket B
+                </h2>
+                <button class="btn btn-primary" id="displayB">
+                    <i class="fas fa-external-link-alt"></i>
+                    Buka Display
+                </button>
+            </div>
+            <div class="counter-content">
+                <div class="queue-panel">
+                    <div class="current-number">
+                        <h2>Nomor Antrian Saat Ini</h2>
+                        <div class="number" id="currentNumberB">0</div>
+                    </div>
+
+                    <div class="last-called">
+                        <h3>Riwayat Nomor Terpanggil</h3>
+                        <div class="last-called-list" id="lastCalledListB">
+                            <!-- Riwayat nomor akan ditampilkan di sini -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-panel">
+                    <div class="form-group">
+                        <label>Nomor Antrian</label>
+                        <input type="number" id="queueNumberB" class="form-control" placeholder="Masukkan nomor antrian">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nomor Rekam Medis</label>
+                        <input type="text" id="rmNumberB" class="form-control" placeholder="Masukkan nomor RM">
+                    </div>
+
+                    <div class="btn-group" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <button class="btn btn-secondary" id="prevButtonB">
+                            <i class="fas fa-backward"></i>
+                            Nomor Sebelumnya
+                        </button>
+                        <button class="btn btn-primary" id="callButtonB">
+                            <i class="fas fa-volume-up"></i>
+                            Panggil
+                        </button>
+                        <button class="btn btn-secondary" id="nextButtonB">
+                            <i class="fas fa-forward"></i>
+                            Nomor Selanjutnya
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                </button>
+                <button class="btn btn-success" id="nextButton">
+                    <i class="fas fa-forward"></i>
+                    Nomor Selanjutnya
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="nomorAntrian" src="assets/sounds/nomor-antrian.mp3"></audio>
+    <audio id="silahkanMenuju" src="assets/sounds/silahkan-menuju.mp3"></audio>
+    <audio id="loket" src="assets/sounds/loket.mp3"></audio>
+    <audio id="loketSatu" src="assets/sounds/loket-satu.mp3"></audio>
+    <audio id="loketDua" src="assets/sounds/loket-dua.mp3"></audio>
+    
+    <script>
+        const { ipcRenderer } = require('electron');
+        const path = require('path');
+        
+        // Queue state for each counter
+        const queueState = {
+            A: {
+                currentNumber: 0,
+                lastCalled: []
+            },
+            B: {
+                currentNumber: 0,
+                lastCalled: []
+            }
+        };
+        const maxLastCalled = 5;
+
+        // Create audio context
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioContext = new AudioContext();
+
+        // Audio file paths
+        const audioFiles = {
+            nomorAntrian: path.join(__dirname, 'assets', 'sounds', 'nomor-antrian.mp3'),
+            silahkanMenuju: path.join(__dirname, 'assets', 'sounds', 'silahkan-menuju.mp3'),
+            loket: path.join(__dirname, 'assets', 'sounds', 'loket.mp3'),
+            loketSatu: path.join(__dirname, 'assets', 'sounds', 'loket-satu.mp3'),
+            loketDua: path.join(__dirname, 'assets', 'sounds', 'loket-dua.mp3')
+        };
+
+        // Function to load and cache audio files
+        async function loadAudio(url) {
+            try {
+                const response = await fetch(`file://${url}`);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                return audioBuffer;
+            } catch (error) {
+                console.error('Error loading audio:', error);
+                return null;
+            }
+        }
+
+        // Cache for audio buffers
+        const audioBuffers = {};
+        
+        // Function to speak numbers in Indonesian
+        function speakNumber(number) {
+            return new Promise((resolve) => {
+                // Create array of single digit audio elements
+                const digits = number.toString().split('');
+                let currentIndex = 0;
+                
+                function playNextDigit() {
+                    if (currentIndex < digits.length) {
+                        const digit = digits[currentIndex];
+                        const audio = new Audio(`assets/sounds/numbers/${digit}.mp3`);
+                        audio.onended = () => {
+                            currentIndex++;
+                            playNextDigit();
+                        };
+                        audio.play();
+                    } else {
+                        resolve();
+                    }
+                }
+                
+                playNextDigit();
+            });
+        }
+        
+        // Function to play audio buffer
+        function playBuffer(buffer) {
+            return new Promise((resolve) => {
+                const source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioContext.destination);
+                source.onended = resolve;
+                source.start();
+            });
+        }
+
+        // Function to load all audio files
+        async function loadAllAudio() {
+            for (const [key, url] of Object.entries(audioFiles)) {
+                audioBuffers[key] = await loadAudio(url);
+            }
+            // Load number audio files
+            for (let i = 0; i <= 9; i++) {
+                const numberUrl = path.join(__dirname, 'assets', 'sounds', 'numbers', `${i}.mp3`);
+                audioBuffers[`number${i}`] = await loadAudio(numberUrl);
+            }
+        }
+
+        // Function to play a sequence of numbers
+        async function playNumber(number) {
+            const digits = number.toString().split('');
+            for (const digit of digits) {
+                const buffer = audioBuffers[`number${digit}`];
+                if (buffer) {
+                    await playBuffer(buffer);
+                }
+            }
+        }
+
+        // Function to play full announcement
+        async function playAnnouncement(number, counterNumber) {
+            try {
+                // Resume audio context if it's suspended
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+
+                // Play sequence
+                await playBuffer(audioBuffers.nomorAntrian);
+                await playNumber(number);
+                await playBuffer(audioBuffers.silahkanMenuju);
+                await playBuffer(audioBuffers.loket);
+                await playBuffer(audioBuffers[counterNumber === 'satu' ? 'loketSatu' : 'loketDua']);
+            } catch (error) {
+                console.error('Error playing announcement:', error);
+            }
+        }
+
+        // Load audio files when page loads
+        loadAllAudio().then(() => {
+            console.log('Audio files loaded successfully');
+        }).catch(error => {
+            console.error('Error loading audio files:', error);
+        });
+
+        // Helper function to setup counter handlers
+        function setupCounterHandlers(counter) {
+            const displayBtn = document.getElementById(`display${counter}`);
+            const callBtn = document.getElementById(`callButton${counter}`);
+            const prevBtn = document.getElementById(`prevButton${counter}`);
+            const nextBtn = document.getElementById(`nextButton${counter}`);
+            const queueInput = document.getElementById(`queueNumber${counter}`);
+            const rmInput = document.getElementById(`rmNumber${counter}`);
+            
+            // Open display window
+            displayBtn.addEventListener('click', () => {
+                ipcRenderer.send('open-display', { counter });
+            });
+
+            // Call number
+            callBtn.addEventListener('click', async () => {
+                const queueNumber = queueInput.value;
+                const rmNumber = rmInput.value;
+                
+                if (!queueNumber) {
+                    alert('Mohon masukkan nomor antrian');
+                    return;
+                }
+
+                try {
+                    // First play the announcement
+                    await playAnnouncement(queueNumber, counter === 'A' ? 'satu' : 'dua');
+                    
+                    // Then send the update to server
+                    ipcRenderer.send('call-number', {
+                        queueNumber,
+                        counter,
+                        rmNumber
+                    });
+
+                    // Update last called numbers
+                    updateLastCalled(counter, queueNumber);
+                    
+                    // Update current number
+                    queueState[counter].currentNumber = parseInt(queueNumber);
+                    updateQueueNumber(counter);
+                } catch (error) {
+                    console.error('Error in call button handler:', error);
+                    alert('Terjadi kesalahan saat memanggil nomor antrian');
+                }
+            });
+
+            // Previous number
+            prevBtn.addEventListener('click', () => {
+                if (queueState[counter].currentNumber > 0) {
+                    queueState[counter].currentNumber--;
+                    updateQueueNumber(counter);
+                    queueInput.value = queueState[counter].currentNumber;
+                }
+            });
+
+            // Next number
+            nextBtn.addEventListener('click', () => {
+                queueState[counter].currentNumber++;
+                updateQueueNumber(counter);
+                queueInput.value = queueState[counter].currentNumber;
+            });
+        }
+
+        // Initialize both counters
+        setupCounterHandlers('A');
+        setupCounterHandlers('B');
+
+        // Function to update queue number display
+        function updateQueueNumber(counter) {
+            const number = queueState[counter].currentNumber;
+            document.getElementById(`currentNumber${counter}`).textContent = number;
+            
+            // Send update to display window
+            ipcRenderer.send('update-queue', {
+                counter,
+                number
+            });
+        }
+
+        // Function to update last called numbers display
+        function updateLastCalled(counter, number) {
+            queueState[counter].lastCalled.unshift(number);
+            if (queueState[counter].lastCalled.length > maxLastCalled) {
+                queueState[counter].lastCalled.pop();
+            }
+
+            const lastCalledList = document.getElementById(`lastCalledList${counter}`);
+            lastCalledList.innerHTML = queueState[counter].lastCalled
+                .map(num => `<div class="last-called-item">${num}</div>`)
+                .join('');
+        }
+
+        // Listen for queue updates from main process
+        ipcRenderer.on('queue-update', (event, data) => {
+            const { counter, number } = data;
+            queueState[counter].currentNumber = parseInt(number);
+            updateQueueNumber(counter);
+            updateLastCalled(counter, number);
+        });
+    </script>
+</body>
+</html>

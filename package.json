@@ -1,0 +1,85 @@
+{
+  "name": "SIANLOPER",
+  "version": "2.0.0",
+  "description": "Queue Management System for Hospital",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder --win",
+    "build:dir": "electron-builder --win --dir",
+    "build:clean": "powershell -Command \"if (Test-Path dist) { Remove-Item -Recurse -Force dist }\" && npm run build",
+    "dist": "electron-builder --win --publish never"
+  },
+  "build": {
+    "appId": "com.hospital.queue",
+    "productName": "Sistem Antrian Rumah Sakit",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": ["nsis"],
+      "signingHashAlgorithms": null,
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "display-a.html",
+      "display-b.html",
+      "settings.html",
+      "staff-a.html",
+      "staff-b.html",
+      "staff.html",
+      "settings.json",
+      "assets/**/*",
+      "package.json",
+      "!**/*.md",
+      "!test-*",
+      "!debug-*",
+      "!download-*",
+      "!simple-*",
+      "!prebuild.js",
+      "!main.js.old",
+      "!main.js.new",
+      "!display.html",
+      "!staff-b copy.html",
+      "!icon-generator.html",
+      "!test-number-conversion.html",
+      "!*.rar",
+      "!*.exe",
+      "!*.sql",
+      "!build/**/*",
+      "!dist/**/*",
+      "!resources/**/*",
+      "!locales/**/*",
+      "!node_modules/mysql2/node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "assets/",
+        "to": "assets/",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "settings.json",
+        "to": "settings.json"
+      }
+    ]
+  },
+  "author": "RSUD H. Abdul Aziz Marabahan",
+  "dependencies": {
+    "mysql2": "^3.6.0",
+    "@electron/remote": "^2.0.12"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^24.6.4"
+  }
+}

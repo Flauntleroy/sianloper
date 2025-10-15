@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pengaturan Aplikasi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-radius: 15px;
+        }
+
+        .navbar h1 {
+            color: #11998e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #11998e;
+        }
+
+        .logo-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #11998e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0e8378;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: #f0f2f5;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #e4e6e8;
+        }
+
+        .preview-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .preview-section h3 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        #runningTextPreview {
+            padding: 10px;
+            background: #11998e;
+            color: white;
+            border-radius: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .running-text {
+            display: inline-block;
+            animation: moveText 20s linear infinite;
+        }
+
+        @keyframes moveText {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>
+            <i class="fas fa-cog"></i>
+            Pengaturan Aplikasi
+        </h1>
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Kembali ke Beranda
+        </a>
+    </div>
+
+    <div class="container">
+        <form id="settingsForm" class="settings-card">
+            <div class="form-group">
+                <label>Nama Institusi</label>
+                <input type="text" id="institutionName" class="form-control" placeholder="Masukkan nama institusi">
+            </div>
+
+            <div class="form-group">
+                <label>Running Text</label>
+                <input type="text" id="runningText" class="form-control" placeholder="Masukkan teks berjalan">
+                <div class="preview-section">
+                    <h3>Preview Running Text:</h3>
+                    <div id="runningTextPreview"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Logo Instansi</label>
+                <input type="file" id="logoFile" accept="image/*" class="form-control">
+                <input type="hidden" id="logoPath">
+                <div class="preview-section">
+                    <h3>Preview Logo:</h3>
+                    <img id="logoPreview" class="logo-preview">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Ukuran Logo</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label>Lebar (px):</label>
+                        <input type="number" id="logoWidth" class="form-control" value="200" min="50" max="500">
+                    </div>
+                    <div>
+                        <label>Tinggi (px):</label>
+                        <input type="number" id="logoHeight" class="form-control" value="100" min="50" max="500">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="settings-card" style="margin: 0; background: #f8f9fa;">
+                    <h3 style="margin-bottom: 15px; color: #555;">
+                        <i class="fas fa-folder-open"></i>
+                        Lokasi File Settings
+                    </h3>
+                    <div style="margin-bottom: 15px;">
+                        <label>Lokasi settings.json saat ini:</label>
+                        <input type="text" id="currentSettingsPath" class="form-control" readonly style="background: #e9ecef;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end;">
+                        <div>
+                            <label>Pilih lokasi custom (opsional):</label>
+                            <input type="text" id="customSettingsPath" class="form-control" placeholder="Pilih folder untuk menyimpan settings.json">
+                        </div>
+                        <button type="button" id="browseSettingsPath" class="btn" style="padding: 12px 20px;">
+                            <i class="fas fa-folder-open"></i>
+                            Browse
+                        </button>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <button type="button" id="resetSettingsPath" class="btn" style="background: #ffc107; color: #212529; padding: 8px 15px; font-size: 14px;">
+                            <i class="fas fa-undo"></i>
+                            Reset ke Default
+                        </button>
+                    </div>
+                    <div style="margin-top: 10px; padding: 10px; background: #d1ecf1; border-radius: 5px; color: #0c5460; font-size: 13px;">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Info:</strong> Aplikasi akan mencari settings.json di beberapa lokasi secara otomatis. 
+                        Jika Anda ingin menggunakan lokasi tertentu, pilih folder di atas.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="settings-card" style="margin: 0; background: #f8f9fa;">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="showVideo" name="showVideo">
+                        <label for="showVideo">Tampilkan Video YouTube</label>
+                    </div>
+                    <div id="youtubeUrlGroup" style="display: none; margin-top: 15px;">
+                        <label>URL Video YouTube:</label>
+                        <input type="text" id="youtubeUrl" class="form-control" 
+                               placeholder="https://www.youtube.com/watch?v=...">
+                        <small style="display: block; margin-top: 5px; color: #666;">
+                            Masukkan URL video YouTube yang akan ditampilkan di display antrian
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Simpan Pengaturan
+                </button>
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-times"></i>
+                    Batal
+                </a>
+            </div>
+        </form>
+    </div>
+                
+        </form>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        const fs = require('fs');
+        const path = require('path');
+
+        // Form elements
+        const form = document.getElementById('settingsForm');
+        const runningText = document.getElementById('runningText');
+        const runningTextPreview = document.getElementById('runningTextPreview');
+        const logoFile = document.getElementById('logoFile');
+        const logoPreview = document.getElementById('logoPreview');
+        const logoWidth = document.getElementById('logoWidth');
+        const logoHeight = document.getElementById('logoHeight');
+        const institutionName = document.getElementById('institutionName');
+        const showVideo = document.getElementById('showVideo');
+        const youtubeUrl = document.getElementById('youtubeUrl');
+        const youtubeUrlGroup = document.getElementById('youtubeUrlGroup');
+        const videoPreview = document.getElementById('videoPreview');
+
+        // Dynamic settings path management
+        let appPaths = null;
+        
+        async function getAppPaths() {
+            if (appPaths) return appPaths;
+            
+            return new Promise((resolve, reject) => {
+                ipcRenderer.send('get-app-paths');
+                
+                const timeout = setTimeout(() => {
+                    reject(new Error('Timeout getting app paths'));
+                }, 5000);
+                
+                ipcRenderer.once('app-paths-response', (event, paths) => {
+                    clearTimeout(timeout);
+                    appPaths = paths;
+                    resolve(paths);
+                });
+                
+                ipcRenderer.once('app-paths-error', (event, error) => {
+                    clearTimeout(timeout);
+                    reject(new Error(error.error));
+                });
+            });
+        }
+        
+        // Modern IPC-based settings functions
+        async function loadSettings() {
+            try {
+                console.log('� Loading settings via IPC...');
+                const settings = await ipcRenderer.invoke('get-settings');
+                console.log('✅ Settings loaded:', settings);
+                return settings;
+            } catch (error) {
+                console.error('❌ Error loading settings via IPC:', error);
+                // Return default settings if there's an error
+                return createDefaultSettings();
+            }
+        }
+
+        async function saveSettings(settings) {
+            try {
+                console.log('💾 Saving settings via IPC...', settings);
+                const result = await ipcRenderer.invoke('save-settings', settings);
+                
+                if (result.success) {
+                    console.log('✅ Settings saved successfully to:', result.path);
+                    return true;
+                } else {
+                    console.error('❌ Failed to save settings:', result.error);
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Error saving settings via IPC:', error);
+                return false;
+            }
+        }
+
+        async function getSettingsPath() {
+            try {
+                const result = await ipcRenderer.invoke('get-settings-path');
+                if (result.success) {
+                    return result.path;
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('❌ Error getting settings path via IPC:', error);
+                // Fallback path
+                return path.join(__dirname, 'settings.json');
+            }
+        }
+
+        function createDefaultSettings() {
+            return {
+                displaySettings: {
+                    runningText: "Selamat Datang di Sistem Antrian Rumah Sakit",
+                    logo: {
+                        path: "",
+                        width: 200,
+                        height: 100
+                    },
+                    institutionName: "Rumah Sakit Umum",
+                    showVideo: false,
+                    youtubeUrl: ""
+                }
+            };
+        }
+
+        // Load current settings
+        let currentSettings = {};
+        
+        async function initializeSettings() {
+            try {
+                currentSettings = await loadSettings();
+                
+                // Populate form with current settings
+                runningText.value = currentSettings.displaySettings.runningText;
+                updateRunningTextPreview();
+                
+                if (currentSettings.displaySettings.logo && currentSettings.displaySettings.logo.path) {
+                    logoPreview.src = currentSettings.displaySettings.logo.path;
+                    document.getElementById('logoPath').value = currentSettings.displaySettings.logo.path;
+                    logoWidth.value = currentSettings.displaySettings.logo.width || 200;
+                    logoHeight.value = currentSettings.displaySettings.logo.height || 100;
+                }
+                
+                institutionName.value = currentSettings.displaySettings.institutionName;
+                showVideo.checked = currentSettings.displaySettings.showVideo;
+                youtubeUrl.value = currentSettings.displaySettings.youtubeUrl;
+                
+                youtubeUrlGroup.style.display = showVideo.checked ? 'block' : 'none';
+                if (showVideo.checked) {
+                    updateVideoPreview();
+                }
+                
+                // Update current settings path display
+                const currentPath = await getSettingsPath();
+                document.getElementById('currentSettingsPath').value = currentPath;
+                
+            } catch (error) {
+                console.error('Error initializing settings:', error);
+                // Use default values
+                currentSettings = createDefaultSettings();
+            }
+        }
+        
+        // Initialize settings when page loads
+        initializeSettings();
+
+        // Handle settings path controls
+        const browseSettingsPath = document.getElementById('browseSettingsPath');
+        const customSettingsPath = document.getElementById('customSettingsPath');
+        const resetSettingsPath = document.getElementById('resetSettingsPath');
+
+        // Browse for custom settings path
+        browseSettingsPath.addEventListener('click', async () => {
+            try {
+                // Request main process to open folder dialog
+                ipcRenderer.send('open-folder-dialog');
+                
+                ipcRenderer.once('folder-dialog-response', async (event, result) => {
+                    if (!result.canceled && result.filePaths.length > 0) {
+                        const selectedPath = path.join(result.filePaths[0], 'settings.json');
+                        customSettingsPath.value = selectedPath;
+                        
+                        // Copy current settings to new location
+                        try {
+                            const currentPath = await getSettingsPath();
+                            if (fs.existsSync(currentPath)) {
+                                const settingsData = fs.readFileSync(currentPath, 'utf8');
+                                
+                                // Create directory if it doesn't exist
+                                const newDir = path.dirname(selectedPath);
+                                if (!fs.existsSync(newDir)) {
+                                    fs.mkdirSync(newDir, { recursive: true });
+                                }
+                                
+                                fs.writeFileSync(selectedPath, settingsData);
+                                alert('Settings berhasil disalin ke lokasi baru: ' + selectedPath);
+                                
+                                // Update current path display
+                                document.getElementById('currentSettingsPath').value = selectedPath;
+                            }
+                        } catch (error) {
+                            console.error('Error copying settings:', error);
+                            alert('Gagal menyalin settings ke lokasi baru');
+                        }
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error opening folder dialog:', error);
+                alert('Gagal membuka dialog folder');
+            }
+        });
+
+        // Reset to default settings path
+        resetSettingsPath.addEventListener('click', async () => {
+            if (confirm('Reset ke lokasi default? Settings saat ini akan disalin ke lokasi default.')) {
+                try {
+                    customSettingsPath.value = '';
+                    const currentPath = await getSettingsPath();
+                    const settingsData = fs.readFileSync(currentPath, 'utf8');
+                    
+                    // Get default path from app paths
+                    const paths = await getAppPaths();
+                    const defaultPath = path.join(paths.userData, 'settings.json');
+                    
+                    // Create directory if needed
+                    const defaultDir = path.dirname(defaultPath);
+                    if (!fs.existsSync(defaultDir)) {
+                        fs.mkdirSync(defaultDir, { recursive: true });
+                    }
+                    
+                    fs.writeFileSync(defaultPath, settingsData);
+                    alert('Settings berhasil direset ke lokasi default: ' + defaultPath);
+                    
+                    // Update current path display
+                    document.getElementById('currentSettingsPath').value = defaultPath;
+                } catch (error) {
+                    console.error('Error resetting settings path:', error);
+                    alert('Gagal mereset settings path');
+                }
+            }
+        });
+
+        // Handle logo file selection
+        logoFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                // Copy file to assets folder
+                const fileName = `logo_${Date.now()}.${file.name.split('.').pop()}`;
+                const logoPath = path.join(__dirname, 'assets', fileName);
+                
+                // Create assets directory if it doesn't exist
+                const assetsDir = path.join(__dirname, 'assets');
+                if (!fs.existsSync(assetsDir)) {
+                    fs.mkdirSync(assetsDir, { recursive: true });
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // Save file to assets folder
+                    const buffer = Buffer.from(e.target.result.split(',')[1], 'base64');
+                    fs.writeFileSync(logoPath, buffer);
+                    
+                    // Update preview and store relative path
+                    logoPreview.src = `assets/${fileName}`;
+                    document.getElementById('logoPath').value = `assets/${fileName}`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle running text preview
+        runningText.addEventListener('input', updateRunningTextPreview);
+
+        function updateRunningTextPreview() {
+            runningTextPreview.innerHTML = `<div class="running-text">${runningText.value}</div>`;
+        }
+
+        // Handle video checkbox
+        showVideo.addEventListener('change', (e) => {
+            youtubeUrlGroup.style.display = e.target.checked ? 'block' : 'none';
+            if (e.target.checked && youtubeUrl.value) {
+                updateVideoPreview();
+            }
+        });
+
+        // Handle YouTube URL preview
+        youtubeUrl.addEventListener('input', updateVideoPreview);
+
+        function updateVideoPreview() {
+            if (showVideo.checked && youtubeUrl.value) {
+                videoPreview.innerHTML = `
+                    <iframe
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                        src="${youtubeUrl.value}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                    ></iframe>
+                `;
+            } else {
+                videoPreview.innerHTML = '';
+            }
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const settings = {
+                displaySettings: {
+                    runningText: runningText.value,
+                    logo: {
+                        path: document.getElementById('logoPath').value || logoPreview.src,
+                        width: parseInt(logoWidth.value),
+                        height: parseInt(logoHeight.value)
+                    },
+                    institutionName: institutionName.value,
+                    showVideo: showVideo.checked,
+                    youtubeUrl: youtubeUrl.value
+                }
+            };
+
+            try {
+                const success = await saveSettings(settings);
+                if (success) {
+                    alert('Pengaturan berhasil disimpan');
+                    
+                    // Notify display windows to update
+                    ipcRenderer.send('settings-updated');
+                } else {
+                    alert('Gagal menyimpan pengaturan');
+                }
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                alert('Gagal menyimpan pengaturan');
+            }
+        });
+    </script>
+</body>
+</html>

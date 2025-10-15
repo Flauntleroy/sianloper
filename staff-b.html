@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Loket B</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #34a89f;
+            --primary-dark: #2d8f87;
+            --secondary: #2ca89a;
+            --accent: #56c4b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+            min-height: 100vh;
+            padding: 1.5rem;
+            color: var(--gray-800);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--white);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--gray-200);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .navbar h1 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.875rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .navbar h1 i {
+            padding: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
+            border-radius: 12px;
+            font-size: 1.25rem;
+        }
+
+        .back-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            text-decoration: none;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid var(--gray-200);
+        }
+
+        .back-btn:hover {
+            background: var(--gray-200);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Queue Panel */
+        .queue-panel {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--gray-200);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .queue-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(52, 168, 159, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        /* Current Number Display */
+        .current-number {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .current-number::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .current-number h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .number {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            font-feature-settings: 'tnum';
+        }
+
+        /* Queue Stats */
+        .queue-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem 0.75rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-item h4 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .stat-item .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            font-feature-settings: 'tnum';
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--gray-200);
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gray-700);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            background: var(--gray-50);
+            color: var(--gray-800);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(52, 168, 159, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: var(--gray-400);
+            font-weight: 400;
+        }
+
+        /* Button Groups */
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 1.25rem;
+            border: none;
+            border-radius: 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.3s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Display Button */
+        .btn-display {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            margin-top: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            border: none;
+            border-radius: 20px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(52, 168, 159, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.4s;
+        }
+
+        .btn-display:hover::before {
+            left: 100%;
+        }
+
+        .btn-display i {
+            font-size: 1.5rem;
+        }
+
+        .btn-display:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 48px rgba(52, 168, 159, 0.4);
+        }
+
+        /* Sync Button */
+        .btn-sync {
+            width: 100%;
+            padding: 1rem 2rem;
+            margin-top: 1rem;
+            background: linear-gradient(135deg, var(--warning), #f59e0b);
+            color: var(--white);
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 24px rgba(245, 158, 11, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-sync::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.4s;
+        }
+
+        .btn-sync:hover::before {
+            left: 100%;
+        }
+
+        .btn-sync:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-sync:active {
+            transform: translateY(0);
+        }
+
+        .btn-sync.syncing {
+            background: linear-gradient(135deg, var(--gray-400), var(--gray-500));
+            cursor: not-allowed;
+        }
+
+        .btn-sync.syncing i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Last Called Section */
+        .last-called {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .last-called h3 {
+            color: var(--gray-700);
+            margin-bottom: 1rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .last-called h3::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .last-called-list {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .last-called-item {
+            background: var(--white);
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .last-called-item:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .last-called-item:first-child {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--white);
+            transform: scale(1.05);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(0.98);
+            }
+        }
+
+        /* Status Indicators */
+        .status-online {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading .number {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .navbar {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .navbar h1 {
+                font-size: 1.5rem;
+            }
+
+            .queue-panel, .control-panel {
+                padding: 1.5rem;
+            }
+
+            .current-number {
+                padding: 2rem 1.5rem;
+            }
+
+            .number {
+                font-size: 3.5rem;
+            }
+
+            .btn-group {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .queue-stats {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .last-called-list {
+                flex-direction: column;
+            }
+
+            .btn-display {
+                padding: 1.25rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>
+            <i class="fas fa-user-tie"></i>
+            LOKET B
+        </h1>
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Kembali ke Beranda
+        </a>
+    </nav>
+
+    <div class="status-online">
+        <div class="status-dot"></div>
+        Sistem Online
+    </div>
+
+    <div class="container">
+        <div class="queue-panel">
+            <div class="current-number">
+                <h2>Nomor Antrian Saat Ini</h2>
+                <div class="number" id="currentNumber">0</div>
+                <div class="queue-stats">
+                    <div class="stat-item">
+                        <h4>Menunggu</h4>
+                        <div class="value" id="waitingCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <h4>Terpanggil</h4>
+                        <div class="value" id="calledCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <h4>Total</h4>
+                        <div class="value" id="totalCount">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="last-called">
+                <h3>
+                    <i class="fas fa-history"></i>
+                    Riwayat Nomor Terpanggil
+                </h3>
+                <div class="last-called-list" id="lastCalledList">
+                    <!-- Riwayat nomor akan ditampilkan di sini -->
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <div class="form-group">
+                <label for="queueNumber">
+                    <i class="fas fa-hashtag"></i>
+                    Nomor Antrian
+                </label>
+                <input type="number" id="queueNumber" class="form-control" placeholder="Masukkan nomor antrian" min="1">
+            </div>
+
+            <div class="form-group">
+                <label for="rmNumber">
+                    <i class="fas fa-file-medical"></i>
+                    Nomor Rekam Medis
+                </label>
+                <input type="text" id="rmNumber" class="form-control" placeholder="Masukkan nomor RM">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="prevButton">
+                    <i class="fas fa-step-backward"></i>
+                    Sebelumnya
+                </button>
+                <button class="btn btn-primary" id="callButton">
+                    <i class="fas fa-volume-up"></i>
+                    Panggil
+                </button>
+                <button class="btn btn-secondary" id="nextButton">
+                    <i class="fas fa-step-forward"></i>
+                    Selanjutnya
+                </button>
+            </div>
+
+            <button class="btn-display" id="openDisplay">
+                <i class="fas fa-desktop"></i>
+                Buka Tampilan Antrian Loket B
+            </button>
+
+            <button class="btn-sync" id="syncButton">
+                <i class="fas fa-sync-alt"></i>
+                Sinkronisasi Data Hari Ini
+            </button>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="nomorAntrian" src="assets/sounds/nomor-antrian.mp3" preload="auto"></audio>
+    <audio id="counterB" src="assets/sounds/b.mp3" preload="auto"></audio>
+    <audio id="silahkanMenuju" src="assets/sounds/silahkan-menuju.mp3" preload="auto"></audio>
+    <audio id="loket" src="assets/sounds/loket.mp3" preload="auto"></audio>
+    <audio id="loketDua" src="assets/sounds/loket-b.mp3"></audio>
+
+    <script>
+        // Electron integration (if available)
+        let ipcRenderer, path;
+        if (typeof require !== 'undefined') {
+            try {
+                const electron = require('electron');
+                ipcRenderer = electron.ipcRenderer;
+                path = require('path');
+            } catch (e) {
+                console.log('Electron modules not available - running in demo mode');
+            }
+        }
+
+        let currentQueueNumber = 0;
+        let queueTotals = {
+            waiting: 0,
+            called: 0,
+            total: 0
+        };
+        const lastCalledNumbers = [];
+        const maxLastCalled = 5;
+        const counter = 'B';
+
+        // Create audio context
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioContext;
+        
+        // Initialize audio context on user interaction
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new AudioContext();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        // Audio file paths (fallback for demo)
+        const audioFiles = path ? {
+            nomorAntrian: path.join(__dirname, 'assets', 'sounds', 'nomor-antrian.mp3'),
+            counterB: path.join(__dirname, 'assets', 'sounds', 'b.mp3'),
+            silahkanMenuju: path.join(__dirname, 'assets', 'sounds', 'silahkan-menuju.mp3'),
+            loket: path.join(__dirname, 'assets', 'sounds', 'loket.mp3'),
+            loketDua: path.join(__dirname, 'assets', 'sounds', 'loket-dua.mp3')
+        } : {};
+
+        // Load and cache audio files
+        const audioBuffers = {};
+
+        async function loadAudio(url) {
+            if (!url || !audioContext) return null;
+            try {
+                const response = await fetch(`file://${url}`);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                return audioBuffer;
+            } catch (error) {
+                console.error('Error loading audio:', error);
+                return null;
+            }
+        }
+
+        async function loadAllAudio() {
+            if (!path || !audioContext) return;
+            
+            for (const [key, url] of Object.entries(audioFiles)) {
+                audioBuffers[key] = await loadAudio(url);
+            }
+            // Load number audio files (0-9)
+            for (let i = 0; i <= 9; i++) {
+                const numberUrl = path.join(__dirname, 'assets', 'sounds', 'numbers', `${i}.mp3`);
+                audioBuffers[`number${i}`] = await loadAudio(numberUrl);
+            }
+            
+            // Load special number audio files
+            const specialNumbers = ['sebelas', 'sepuluh', 'puluh', 'belas', 'ratus', 'seratus', 'seribu'];
+            for (const special of specialNumbers) {
+                const specialUrl = path.join(__dirname, 'assets', 'sounds', 'numbers', `${special}.mp3`);
+                audioBuffers[special] = await loadAudio(specialUrl);
+            }
+        }
+
+        // Function to play buffer
+        function playBuffer(buffer) {
+            if (!buffer || !audioContext) return Promise.resolve();
+            return new Promise((resolve) => {
+                const source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioContext.destination);
+                source.onended = resolve;
+                source.start();
+            });
+        }
+
+        // Function to convert number to Indonesian audio sequence
+        function numberToIndonesianAudio(number) {
+            const num = parseInt(number);
+            const audioSequence = [];
+            
+            if (num === 0) {
+                audioSequence.push('number0');
+                return audioSequence;
+            }
+            
+            if (num < 0) return audioSequence;
+            
+            // Handle thousands (1000-9999)
+            if (num >= 1000) {
+                const thousands = Math.floor(num / 1000);
+                if (thousands === 1) {
+                    audioSequence.push('seribu');
+                } else {
+                    audioSequence.push(`number${thousands}`);
+                    audioSequence.push('seribu');
+                }
+                
+                const remainder = num % 1000;
+                if (remainder > 0) {
+                    audioSequence.push(...numberToIndonesianAudio(remainder));
+                }
+                return audioSequence;
+            }
+            
+            // Handle hundreds (100-999)
+            if (num >= 100) {
+                const hundreds = Math.floor(num / 100);
+                if (hundreds === 1) {
+                    audioSequence.push('seratus');
+                } else {
+                    audioSequence.push(`number${hundreds}`);
+                    audioSequence.push('ratus');
+                }
+                
+                const remainder = num % 100;
+                if (remainder > 0) {
+                    audioSequence.push(...numberToIndonesianAudio(remainder));
+                }
+                return audioSequence;
+            }
+            
+            // Handle teens and tens (10-99)
+            if (num >= 10) {
+                if (num === 10) {
+                    audioSequence.push('sepuluh');
+                } else if (num === 11) {
+                    audioSequence.push('sebelas');
+                } else if (num >= 12 && num <= 19) {
+                    const ones = num - 10;
+                    audioSequence.push(`number${ones}`);
+                    audioSequence.push('belas');
+                } else {
+                    // 20, 30, 40, etc.
+                    const tens = Math.floor(num / 10);
+                    audioSequence.push(`number${tens}`);
+                    audioSequence.push('puluh');
+                    
+                    const ones = num % 10;
+                    if (ones > 0) {
+                        audioSequence.push(`number${ones}`);
+                    }
+                }
+                return audioSequence;
+            }
+            
+            // Handle single digits (1-9)
+            if (num >= 1 && num <= 9) {
+                audioSequence.push(`number${num}`);
+            }
+            
+            return audioSequence;
+        }
+
+        // Function to play number sequence with Indonesian pronunciation
+        async function playNumber(number) {
+            const audioSequence = numberToIndonesianAudio(number);
+            for (const audioKey of audioSequence) {
+                const buffer = audioBuffers[audioKey];
+                if (buffer) {
+                    await playBuffer(buffer);
+                    // Add small delay between audio clips for natural speech
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            }
+        }
+
+        // Fallback function to play audio using HTML audio elements
+        async function playAudioFallback(audioId) {
+            return new Promise((resolve) => {
+                const audio = document.getElementById(audioId);
+                if (audio) {
+                    audio.onended = resolve;
+                    audio.play().catch(error => {
+                        console.error('Error playing audio:', error);
+                        resolve();
+                    });
+                } else {
+                    resolve();
+                }
+            });
+        }
+
+        // Fallback function for playing numbers using HTML audio
+        async function playNumberFallback(number) {
+            const audioSequence = numberToIndonesianAudio(number);
+            for (const audioKey of audioSequence) {
+                if (audioKey.startsWith('number')) {
+                    // Play number audio files
+                    const digit = audioKey.replace('number', '');
+                    const audio = new Audio(`assets/sounds/numbers/${digit}.mp3`);
+                    await new Promise(resolve => {
+                        audio.onended = resolve;
+                        audio.play().catch(() => resolve());
+                    });
+                } else {
+                    // Play special audio files
+                    const audio = new Audio(`assets/sounds/numbers/${audioKey}.mp3`);
+                    await new Promise(resolve => {
+                        audio.onended = resolve;
+                        audio.play().catch(() => resolve());
+                    });
+                }
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
+
+        // Enhanced announcement function with fallback
+        async function playAnnouncement(number) {
+            try {
+                initAudioContext();
+                
+                if (audioBuffers.nomorAntrian) {
+                    // Use Web Audio API if available
+                    await playBuffer(audioBuffers.nomorAntrian);
+                    await playBuffer(audioBuffers.counterB); 
+                    await playNumber(number);
+                    await playBuffer(audioBuffers.silahkanMenuju);
+                    await playBuffer(audioBuffers.loket);
+                    await playBuffer(audioBuffers.loketDua);
+                } else {
+                    // Fallback to HTML audio elements
+                    console.log('Using fallback audio method');
+                    await playAudioFallback('nomorAntrian');
+                    await playAudioFallback('counterB');
+                    await playNumberFallback(number);
+                    await playAudioFallback('silahkanMenuju');
+                    await playAudioFallback('loket');
+                    await playAudioFallback('loketDua');
+                }
+            } catch (error) {
+                console.error('Error playing announcement:', error);
+                // Last resort fallback
+                try {
+                    await playAudioFallback('nomorAntrian');
+                    await playAudioFallback('counterB');
+                    await playNumberFallback(number);
+                    await playAudioFallback('silahkanMenuju');
+                    await playAudioFallback('loket');
+                    await playAudioFallback('loketDua');
+                } catch (fallbackError) {
+                    console.error('Fallback audio also failed:', fallbackError);
+                }
+            }
+        }
+
+        // Initialize audio when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize audio context on first user interaction
+            document.addEventListener('click', initAudioContext, { once: true });
+            
+            // Load audio files
+            setTimeout(() => {
+                initAudioContext();
+                loadAllAudio().then(() => {
+                    console.log('Audio files loaded successfully');
+                });
+                
+                // Automatically open display window when page loads
+                if (ipcRenderer) {
+                    ipcRenderer.send('open-display', { counter });
+                } else {
+                    // Demo mode - open in new window
+                    window.open('display-b.html', '_blank', 'width=1200,height=800');
+                }
+                console.log('Display window opened automatically');
+            }, 1000);
+        });
+
+        // Button event handlers
+        document.getElementById('openDisplay').addEventListener('click', () => {
+            if (ipcRenderer) {
+                ipcRenderer.send('open-display', { counter });
+            } else {
+                // Demo mode - open in new window
+                window.open('display-b.html', '_blank', 'width=1200,height=800');
+            }
+        });
+
+        document.getElementById('syncButton').addEventListener('click', () => {
+            const syncBtn = document.getElementById('syncButton');
+            const originalHTML = syncBtn.innerHTML;
+            
+            // Add loading state
+            syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyinkronkan...';
+            syncBtn.classList.add('syncing');
+            syncBtn.disabled = true;
+
+            // Clear current stats first
+            updateStats({ waiting: 0, called: 0, total: 0 });
+
+            if (ipcRenderer) {
+                ipcRenderer.send('sync-queue-totals');
+                // Also request fresh data
+                setTimeout(() => {
+                    ipcRenderer.send('request-queue-totals');
+                }, 500);
+            } else {
+                // Demo mode
+                setTimeout(() => {
+                    showNotification('Data berhasil disinkronisasi (Demo Mode)', 'success');
+                    syncBtn.innerHTML = originalHTML;
+                    syncBtn.classList.remove('syncing');
+                    syncBtn.disabled = false;
+                }, 1500);
+            }
+        });
+
+        document.getElementById('callButton').addEventListener('click', async () => {
+            const queueNumber = document.getElementById('queueNumber').value;
+            const rmNumber = document.getElementById('rmNumber').value;
+            
+            if (!queueNumber) {
+                showNotification('Mohon masukkan nomor antrian', 'warning');
+                return;
+            }
+
+            // Add loading state
+            const callBtn = document.getElementById('callButton');
+            const originalHTML = callBtn.innerHTML;
+            callBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memanggil...';
+            callBtn.disabled = true;
+
+            try {
+                await playAnnouncement(queueNumber);
+                
+                if (ipcRenderer) {
+                    ipcRenderer.send('call-number', {
+                        queueNumber,
+                        counter,
+                        rmNumber
+                    });
+                }
+
+                updateLastCalled(queueNumber);
+                updateCurrentNumber(parseInt(queueNumber));
+                showNotification(`Nomor ${queueNumber} berhasil dipanggil`, 'success');
+                
+            } catch (error) {
+                console.error('Error in call button handler:', error);
+                showNotification('Terjadi kesalahan saat memanggil nomor antrian', 'error');
+            } finally {
+                // Restore button
+                setTimeout(() => {
+                    callBtn.innerHTML = originalHTML;
+                    callBtn.disabled = false;
+                }, 1000);
+            }
+        });
+
+        document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentQueueNumber > 0) {
+                currentQueueNumber--;
+                updateQueueNumber(currentQueueNumber, true);
+            }
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            currentQueueNumber++;
+            updateQueueNumber(currentQueueNumber, true);
+        });
+
+        // Update functions
+        function updateQueueNumber(number, isPreview = false) {
+            updateCurrentNumber(number);
+            document.getElementById('queueNumber').value = number;
+            
+            if (ipcRenderer) {
+                ipcRenderer.send('update-queue', {
+                    counter,
+                    number,
+                    isPreview
+                });
+            }
+        }
+
+        function updateCurrentNumber(number) {
+            const numberElement = document.getElementById('currentNumber');
+            const queuePanel = document.querySelector('.queue-panel');
+            
+            // Add loading animation
+            queuePanel.classList.add('loading');
+            
+            setTimeout(() => {
+                numberElement.textContent = number;
+                currentQueueNumber = number;
+                queuePanel.classList.remove('loading');
+            }, 300);
+        }
+
+        function updateLastCalled(number) {
+            lastCalledNumbers.unshift(number);
+            if (lastCalledNumbers.length > maxLastCalled) {
+                lastCalledNumbers.pop();
+            }
+
+            const lastCalledList = document.getElementById('lastCalledList');
+            lastCalledList.innerHTML = lastCalledNumbers
+                .map((num, index) => `<div class="last-called-item ${index === 0 ? 'latest' : ''}">${num}</div>`)
+                .join('');
+        }
+
+        function updateStats(stats) {
+            console.log('=== UPDATING STATS (STAFF B) ===');
+            console.log('Received stats:', stats);
+            console.log('Stats type:', typeof stats);
+            
+            const waiting = stats.waiting || 0;
+            const called = stats.called || 0;
+            const total = stats.total || 0;
+            
+            console.log(`Setting values - Waiting: ${waiting}, Called: ${called}, Total: ${total}`);
+            
+            document.getElementById('waitingCount').textContent = waiting;
+            document.getElementById('calledCount').textContent = called;
+            document.getElementById('totalCount').textContent = total;
+            
+            console.log('Stats updated in DOM');
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas ${getNotificationIcon(type)}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            // Add styles
+            notification.style.cssText = `
+                position: fixed;
+                top: 2rem;
+                right: 2rem;
+                background: ${getNotificationColor(type)};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: var(--shadow-xl);
+                z-index: 1000;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+
+            document.body.appendChild(notification);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                notification.style.transform = 'translateX(0)';
+            });
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        function getNotificationIcon(type) {
+            switch (type) {
+                case 'success': return 'fa-check-circle';
+                case 'warning': return 'fa-exclamation-triangle';
+                case 'error': return 'fa-times-circle';
+                default: return 'fa-info-circle';
+            }
+        }
+
+        function getNotificationColor(type) {
+            switch (type) {
+                case 'success': return 'var(--success)';
+                case 'warning': return 'var(--warning)';
+                case 'error': return 'var(--error)';
+                default: return 'var(--primary)';
+            }
+        }
+
+        // Electron IPC listeners
+        if (ipcRenderer) {
+            // Listen for queue updates
+            ipcRenderer.on('update-queue', (event, data) => {
+                if (data.counter === counter) {
+                    updateCurrentNumber(parseInt(data.number));
+                    document.getElementById('queueNumber').value = data.number;
+                    if (!data.isPreview) {
+                        updateLastCalled(data.number);
+                    }
+                }
+            });
+
+            // Listen for queue totals updates
+            ipcRenderer.on('queue-totals-update', (event, totals) => {
+                console.log('=== RECEIVED QUEUE TOTALS UPDATE (STAFF B) ===');
+                console.log('All totals received:', totals);
+                const csData = totals['CS'] || { waiting: 0, called: 0, total: 0 };
+                console.log('CS data extracted:', csData);
+                updateStats(csData);
+            });
+
+            // Listen for sync completion
+            ipcRenderer.on('sync-complete', (event, data) => {
+                const syncBtn = document.getElementById('syncButton');
+                const originalHTML = '<i class="fas fa-sync-alt"></i> Sinkronisasi Data Hari Ini';
+                
+                syncBtn.innerHTML = originalHTML;
+                syncBtn.classList.remove('syncing');
+                syncBtn.disabled = false;
+                
+                showNotification(`${data.message} (${data.date})`, 'success');
+            });
+
+            // Request initial queue totals
+            ipcRenderer.send('request-queue-totals');
+        } else {
+            // Demo mode - simulate some data
+            setTimeout(() => {
+                updateStats({ waiting: 12, called: 8, total: 20 });
+                updateLastCalled('15');
+                updateLastCalled('14');
+                updateLastCalled('13');
+            }, 1000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (event) => {
+            // Prevent shortcuts if user is typing in input fields
+            if (event.target.tagName === 'INPUT') return;
+
+            switch (event.key) {
+                case 'Enter':
+                case ' ':
+                    event.preventDefault();
+                    document.getElementById('callButton').click();
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    document.getElementById('prevButton').click();
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    document.getElementById('nextButton').click();
+                    break;
+                case 'd':
+                case 'D':
+                    if (event.ctrlKey || event.metaKey) {
+                        event.preventDefault();
+                        document.getElementById('openDisplay').click();
+                    }
+                    break;
+            }
+        });
+
+        // Auto-focus queue number input
+        document.addEventListener('DOMContentLoaded', () => {
+            const queueInput = document.getElementById('queueNumber');
+            if (queueInput) {
+                queueInput.focus();
+            }
+        });
+
+        // Input validation
+        document.getElementById('queueNumber').addEventListener('input', (e) => {
+            let value = parseInt(e.target.value);
+            if (value < 1) {
+                e.target.value = '';
+            }
+        });
+
+        // RM Number formatting
+        document.getElementById('rmNumber').addEventListener('input', (e) => {
+            // Auto-format RM number if needed
+            let value = e.target.value.toUpperCase();
+            e.target.value = value;
+        });
+
+        // Add pulse effect to current number when it changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                    const numberElement = document.getElementById('currentNumber');
+                    if (numberElement) {
+                        numberElement.style.animation = 'none';
+                        numberElement.offsetHeight; // Trigger reflow
+                        numberElement.style.animation = 'pulse 0.6s ease-out';
+                    }
+                }
+            });
+        });
+
+        observer.observe(document.getElementById('currentNumber'), {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        // Page visibility handling
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && ipcRenderer) {
+                // Request fresh data when page becomes visible
+                ipcRenderer.send('request-queue-totals');
+            }
+        });
+
+        console.log('Loket B Management System initialized');
+        console.log('Keyboard shortcuts:');
+        console.log('- Enter/Space: Call number');
+        console.log('- Arrow Left: Previous number');
+        console.log('- Arrow Right: Next number');
+        console.log('- Ctrl+D: Open display');
+    </script>
+</body>
+</html>

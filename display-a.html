@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Antrian - Loket A</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #34a89f;
+            --primary-dark: #2d8f87;
+            --secondary: #2ca89a;
+            --accent: #56c4b8;
+            --white: #ffffff;
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 16px 48px rgba(0, 0, 0, 0.15);
+            --shadow-strong: 0 24px 64px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            animation: backgroundFloat 20s ease-in-out infinite;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .shape:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation: float1 25s infinite linear;
+        }
+
+        .shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 70%;
+            right: 15%;
+            animation: float2 30s infinite linear;
+        }
+
+        .shape:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            animation: float3 35s infinite linear;
+        }
+
+        /* Header Section */
+        .header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo {
+            height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            max-height: 100%;
+            width: auto;
+        }
+
+        .institution-name {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--white);
+            text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.02em;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .datetime-display {
+            text-align: right;
+            color: var(--white);
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .time {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .date {
+            font-size: 1.25rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .content {
+            display: flex;
+            flex: 1;
+            padding: 2rem;
+            gap: 2rem;
+            position: relative;
+            z-index: 2;
+            min-height: 0;
+        }
+
+        /* Queue Information */
+        .queue-info {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+            animation: slideInLeft 1s ease-out 0.4s both;
+        }
+
+        .queue-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        .counter-name {
+            color: var(--white);
+            font-size: clamp(8rem, 10vw, 10rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.1em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .counter-name::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--white));
+            border-radius: 2px;
+        }
+
+        .number-display {
+            position: relative;
+            z-index: 1;
+        }
+
+        .number {
+            color: var(--white);
+            font-size: clamp(14rem, 16vw, 18rem);
+            font-weight: 900;
+            text-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            line-height: 0.9;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-feature-settings: 'tnum';
+        }
+
+        /* Video Section */
+        .video-section {
+            flex: 1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            animation: slideInRight 1s ease-out 0.6s both;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 24px;
+        }
+
+        /* Running Text */
+        .running-text-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 0 0 24px 24px;
+            padding: 1.5rem;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .running-text {
+            display: inline-block;
+            animation: moveText 25s linear infinite;
+            color: var(--white);
+            font-size: 1.25rem;
+            font-weight: 500;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Status Indicator */
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 16px;
+            height: 16px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        /* Animations */
+        @keyframes backgroundFloat {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(-180deg); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(180deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes moveText {
+            from { transform: translateX(100vw); }
+            to { transform: translateX(-100%); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes flash {
+            0% { 
+                transform: scale(1);
+                text-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            }
+            50% { 
+                transform: scale(1.05);
+                text-shadow: 0 12px 48px rgba(255, 255, 255, 0.3), 0 8px 32px rgba(0, 0, 0, 0.4);
+            }
+            100% { 
+                transform: scale(1);
+                text-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        @keyframes preview {
+            0% { 
+                opacity: 0.7; 
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.02);
+                filter: brightness(1.2);
+            }
+            100% { 
+                opacity: 0.7; 
+                transform: scale(1);
+                filter: brightness(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .video-section {
+                min-height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem;
+            }
+
+            .content {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .queue-info {
+                padding: 2rem 1rem;
+            }
+
+            .running-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .queue-info {
+                padding: 1.5rem 1rem;
+            }
+
+            .running-text-container {
+                padding: 1rem;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading .number {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo" id="logoContainer">
+                <!-- Logo will be inserted here -->
+            </div>
+            <div class="institution-name" id="institutionName">
+                <!-- Institution name will be inserted here -->
+            </div>
+        </div>
+        <div class="datetime-display">
+            <div class="time" id="currentTime">00:00:00</div>
+            <div class="date" id="currentDate">1 Januari 2025</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="queue-info">
+            <h1 class="counter-name">LOKET A</h1>
+            <div class="number" id="currentNumber">0</div>
+        </div>
+        <div class="video-section" id="videoSection" style="display: none;">
+            <div class="video-container" id="videoContainer">
+                <!-- YouTube video will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="running-text-container">
+        <div class="running-text" id="runningText">
+            <!-- Running text will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        const fs = require('fs');
+        const path = require('path');
+
+        // Modern IPC-based settings loader
+        async function loadSettings() {
+            try {
+                console.log('📥 Loading settings via IPC...');
+                const settings = await ipcRenderer.invoke('get-settings');
+                console.log('✅ Settings loaded via IPC:', settings);
+                return settings;
+            } catch (error) {
+                console.error('❌ Error loading settings via IPC:', error);
+                // Return default settings if there's an error
+                return {
+                    displaySettings: {
+                        runningText: "Selamat datang di RSUD H. Abdul Aziz Marabahan",
+                        logo: {
+                            path: "assets/logo.svg",
+                            width: 120,
+                            height: 60
+                        },
+                        institutionName: "RSUD H. Abdul Aziz Marabahan",
+                        showVideo: false,
+                        youtubeUrl: ""
+                    }
+                };
+            }
+        }
+
+        let settings;
+        
+        // Initialize settings asynchronously
+        async function initializeSettings() {
+            try {
+                settings = await loadSettings();
+                console.log('✅ Display A settings initialized:', settings);
+                applySettings(settings);
+            } catch (error) {
+                console.error('❌ Error initializing settings:', error);
+                // Use default settings
+                settings = {
+                    displaySettings: {
+                        runningText: "Selamat datang di RSUD H. Abdul Aziz Marabahan",
+                        logo: {
+                            path: "assets/logo.svg",
+                            width: 120,
+                            height: 60
+                        },
+                        institutionName: "RSUD H. Abdul Aziz Marabahan",
+                        showVideo: false,
+                        youtubeUrl: ""
+                    }
+                };
+                applySettings(settings);
+            }
+        }
+
+        // Listen for settings updates from main process
+        ipcRenderer.on('settings-updated', (event, newSettings) => {
+            console.log('🔄 Settings updated in Display A:', newSettings);
+            settings = newSettings;
+            applySettings(settings);
+        });
+
+        // Function to apply settings to the display
+        function applySettings(settings) {
+            try {
+                const displaySettings = settings.displaySettings;
+                
+                // Update running text
+                const runningTextElement = document.querySelector('.running-text span');
+                if (runningTextElement && displaySettings.runningText) {
+                    runningTextElement.textContent = displaySettings.runningText;
+                }
+                
+                // Update institution name
+                const institutionElement = document.querySelector('.hospital-name');
+                if (institutionElement && displaySettings.institutionName) {
+                    institutionElement.textContent = displaySettings.institutionName;
+                }
+                
+                // Update logo
+                const logoElement = document.querySelector('.logo img');
+                if (logoElement && displaySettings.logo && displaySettings.logo.path) {
+                    logoElement.src = displaySettings.logo.path;
+                    logoElement.style.width = displaySettings.logo.width + 'px';
+                    logoElement.style.height = displaySettings.logo.height + 'px';
+                }
+                
+                console.log('✅ Settings applied to Display A');
+            } catch (error) {
+                console.error('❌ Error applying settings:', error);
+            }
+        }
+
+        // Initialize on window load
+        window.addEventListener('load', () => {
+            initializeSettings();
+        });
+
+        // Update time and date
+        function updateDateTime() {
+            const now = new Date();
+            const timeElement = document.getElementById('currentTime');
+            const dateElement = document.getElementById('currentDate');
+
+            // Update time with seconds
+            timeElement.textContent = now.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+
+            // Update date in Indonesian format
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateElement.textContent = now.toLocaleDateString('id-ID', options);
+        }
+
+        // Update time every second
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // Initial call
+
+        function applySettings() {
+            // Apply logo
+            const logoContainer = document.getElementById('logoContainer');
+            if (settings.displaySettings.logo.path) {
+                const logo = document.createElement('img');
+                
+                // Determine correct logo path for development vs production
+                let logoPath = settings.displaySettings.logo.path;
+                if (!fs.existsSync(logoPath) && process.resourcesPath) {
+                    // In production, assets are in resources folder
+                    logoPath = path.join(process.resourcesPath, settings.displaySettings.logo.path);
+                }
+                
+                logo.src = logoPath;
+                logo.style.height = '60px';
+                logo.style.width = 'auto';
+                logoContainer.innerHTML = '';
+                logoContainer.appendChild(logo);
+            }
+
+            // Apply institution name
+            document.getElementById('institutionName').textContent = 
+                settings.displaySettings.institutionName || 'Sistem Antrian';
+
+            // Apply running text
+            document.getElementById('runningText').textContent = 
+                settings.displaySettings.runningText || 'Selamat datang di sistem antrian kami';
+
+            // Handle video section
+            const videoSection = document.getElementById('videoSection');
+            const videoContainer = document.getElementById('videoContainer');
+            
+            if (settings.displaySettings.showVideo && settings.displaySettings.youtubeUrl) {
+                videoSection.style.display = 'block';
+                // Extract video ID from URL and create embed URL
+                let videoId = settings.displaySettings.youtubeUrl.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/user\/\S+|\/ytscreeningroom\?v=))([\w\-]{10,12})/i)?.[1];
+                if (videoId) {
+                    videoContainer.innerHTML = `
+                        <iframe
+                            src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                        ></iframe>
+                    `;
+                }
+            } else {
+                videoSection.style.display = 'none';
+                videoContainer.innerHTML = '';
+            }
+        }
+
+        // Update the display immediately when data is received
+        function updateDisplay(number, isPreview = false) {
+            requestAnimationFrame(() => {
+                const displayElement = document.getElementById('currentNumber');
+                if (displayElement) {
+                    displayElement.textContent = number;
+                    displayElement.style.animation = 'none';
+                    displayElement.offsetHeight; // Trigger reflow
+                    displayElement.style.animation = isPreview ? 'preview 0.3s' : 'flash 0.5s';
+                }
+            });
+        }
+
+        // Handle queue updates
+        ipcRenderer.on('update-queue', (event, data) => {
+            if (data.counter === 'A') {
+                updateDisplay(data.number, data.isPreview);
+            }
+        });
+
+        // Listen for settings updates
+        ipcRenderer.on('settings-updated', () => {
+            try {
+                settings = loadSettings();
+                applySettings();
+            } catch (error) {
+                console.error('Error reloading settings:', error);
+            }
+        });
+    </script>
+</body>
+</html>
