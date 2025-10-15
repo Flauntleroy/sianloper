@@ -2,7 +2,7 @@
 
 Aplikasi manajemen antrian berbasis Electron untuk Rumah Sakit. Dikembangkan oleh RSUD H. Abdul Aziz Marabahan.
 
-## Fitur Utama
+## Features
 
 - **Multi Loket**: Mendukung beberapa loket antrian (Loket A dan B)
 - **Tampilan Terpisah**: Tampilan antrian dan tampilan operator terpisah
@@ -11,19 +11,13 @@ Aplikasi manajemen antrian berbasis Electron untuk Rumah Sakit. Dikembangkan ole
 - **Kustomisasi**: Pengaturan tampilan yang dapat disesuaikan (logo, teks berjalan, dll)
 - **Integrasi Database**: Dukungan untuk MySQL
 
-## Teknologi
-
-- Electron
-- HTML/CSS/JavaScript
-- MySQL
-
-## Persyaratan Sistem
+## Requirements
 
 - Windows 7 atau lebih tinggi
 - Node.js 14 atau lebih tinggi
 - MySQL (opsional, untuk fitur database)
 
-## Instalasi
+## Installation
 
 1. Clone repositori ini
    ```
@@ -41,13 +35,13 @@ Aplikasi manajemen antrian berbasis Electron untuk Rumah Sakit. Dikembangkan ole
    npm start
    ```
 
-## Pengembangan
+## Development
 
 ```
 npm run dev
 ```
 
-## Build Aplikasi
+## Build 
 
 Untuk membuat executable Windows:
 ```
@@ -56,7 +50,7 @@ npm run build
 
 Hasil build akan tersedia di folder `dist`.
 
-## Struktur Aplikasi
+## Structure
 
 - `main.js` - File utama Electron
 - `index.html` - Halaman utama aplikasi
@@ -66,6 +60,6 @@ Hasil build akan tersedia di folder `dist`.
 - `settings.json` - File konfigurasi aplikasi
 - `assets/` - Folder untuk aset (logo, suara, dll)
 
-## Lisensi
+## License
 
-Hak Cipta © 2023 RSUD H. Abdul Aziz Marabahan
+Copyright © 2025 ITRSHAA. All rights reserved.
